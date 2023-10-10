@@ -1,24 +1,29 @@
-import React from 'react';
+import React, { useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
 function App() {
+  const API_URL = 'http://localhost:3000/'
+  const [quote, setQuote] = useState<{content: String, author: String} | null>(null);
+
+  const getQuote = async () => {
+    try {
+      const response = await fetch(API_URL+'api/quote');
+      const data = await response.json();
+      console.log(data)
+      setQuote(data);
+    } catch (error) {
+      console.error("Quotation retrieval error:", error);
+    }
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div className="Content">
+        {!quote && <p>Click on the button to get a quote :</p>}
+        {quote && <div><p>❝{quote.content}❞</p><p>{quote.author}</p></div>}
+        <button onClick={getQuote}>Get a quote</button>
+      </div>
     </div>
   );
 }

@@ -1,14 +1,21 @@
 import express from 'express';
 import axios from 'axios';
+import cors from 'cors';
 
 const app = express();
 const PORT = 3000;
 const QUOTE_API = 'https://api.quotable.io/quotes/random';
 
 
+
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
+
+app.use(cors({
+    origin: 'http://localhost:8000', // Adresse du front-end
+    credentials: true
+}));
 
 
 app.get('/api/quote', (req, res) => {

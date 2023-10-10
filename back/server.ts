@@ -1,27 +1,52 @@
 import express from 'express';
 import axios from 'axios';
 import cors from 'cors';
+import morgan from 'morgan';
 
 const app = express();
 const PORT = 3000;
 const QUOTE_API = 'https://api.quotable.io/quotes/random';
-
-
+const API_KEY = 'azerty123'
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
 
+
+/******************
+*** Middelwares ***
+*******************/
+
+//Handle cross-origin requests (CORS)
 app.use(cors({
     origin: 'http://localhost:8000', // Adresse du front-end
     credentials: true
 }));
 
+//Checking API Token (Morgan)
+app.use(morgan('combined'));
+app.use((req, res, next) => {
+    const apiToken = req.header('Authorization');
+
+    // API Token checking
+    if (!apiToken || apiToken !== `Bearer ${API_KEY}`) {
+        return res.status(401).json({ success: false, message: 'Invalid or missing API token.' });
+    }
+
+    next();
+});
+
+
+
+/*************
+*** Routes ***
+**************/
 
 app.get('/api/quote', (req, res) => {
     axios.get(QUOTE_API)
     .then(response => {
         if(response.data && response.data.length > 0) {
+            // Send Content and Author only (hiding data)
             const quote = {
                 content: response.data[0].content,
                 author: response.data[0].author

@@ -1,19 +1,21 @@
 import React, { useState } from 'react';
-import logo from './logo.svg';
 import './App.css';
 
 function App() {
   const API_URL = 'http://localhost:3000/'
+  const API_KEY = process.env.REACT_APP_API_KEY;
   const [quote, setQuote] = useState<{content: String, author: String} | null>(null);
 
   const getQuote = async () => {
     try {
-      const response = await fetch(API_URL+'api/quote');
+      const response = await fetch(API_URL+'api/quote', {headers: {'Authorization': `Bearer${API_KEY}`}});
       const data = await response.json();
-      console.log(data)
+      if (!response.ok) {
+        throw new Error(data.message || "Error: Something went wrong!");
+      }
       setQuote(data);
     } catch (error) {
-      console.error("Quotation retrieval error:", error);
+      console.error(error);
     }
   };
 

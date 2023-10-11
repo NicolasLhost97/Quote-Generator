@@ -1,0 +1,34 @@
+# .gitignore for Express
+
+# Dependencies directory
+/node_modules/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime files
+*.pem
+*.cert
+*.key
+
+# Environment files
+.env
+
+# Editor cache folders
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Build and distribution directories
+/dist/
+/build/
+
+# Other temporary or cache files
+*.log
+*.tmp
+*.bak
+*.pid
+*.dump

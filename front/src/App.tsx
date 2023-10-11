@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import './App.css';
 
+
+/*****************
+*** Components ***
+******************/
+
+// Component Quote
 type Quote = {
   content: String, 
   author : String 
 }
 
-type ButtonProps = {
-  onClick: () => void;
-  label: string;
-}
-
-// Composant Quote
 function QuoteComponent({ content, author } : Quote) {
   return (
     <div>
@@ -21,12 +21,37 @@ function QuoteComponent({ content, author } : Quote) {
   );
 }
 
-// Composant QuoteButton
+// Component QuoteButton
+type ButtonProps = {
+  onClick: () => void;
+  label: string;
+}
+
 function QuoteButton({ onClick, label }: ButtonProps) {
   return (
     <button onClick={onClick}>{label}</button>
   );
 }
+
+// Component ErrorMessage
+type ErrorMessagesProps = {
+  messages: string[];
+}
+
+const ErrorMessages: React.FC<ErrorMessagesProps> = ({ messages }) => {
+  return (
+    <div>
+      {messages.map((message, index) => (
+        <div key={index} className="Error show" style={{top: `${index * 50}px`}}>
+          {message}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+
+
 
 
 function App() {
@@ -60,32 +85,17 @@ function App() {
   *** Error Messages Management ***
   *********************************/
 
-  // Displays error messages from top to bottom
-  const displayError = (message: string) => {
-    // Create a new error div element
-    const errorDiv = document.createElement('div');
-    errorDiv.className = 'Error show';
-    errorDiv.innerText = message;
-  
-    // Fetch all existing error messages displayed on the screen
-    const existingErrors = document.querySelectorAll('.Error');
+  const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
-    // Move all existing errors down 50px
-    existingErrors.forEach((err) => {
-      if (err instanceof HTMLElement) {
-        const currentTop = parseInt(window.getComputedStyle(err).top);
-        err.style.top = `${currentTop + 50}px`;
-      }
-    });
-    
-    // Display the newest error
-    document.body.appendChild(errorDiv);
-  
-    // Remove the error message after 3 seconds
+  // Add new error to the list to be displayed
+  const displayError = (message: string) => {
+    // Add the message to the errorMessages
+    setErrorMessages((prevMessages) => [message, ...prevMessages]);
+    // Delete message after 3 seconds
     setTimeout(() => {
-      document.body.removeChild(errorDiv);
+      setErrorMessages((prevMessages) => prevMessages.slice(0, -1));
     }, 3000);
-  };
+};
 
   
   /************************
@@ -97,7 +107,7 @@ function App() {
 
   const getQuote = async () => {
     try {
-      const response = await fetch(API_URL+'api/quote', {headers: {'Authorization': `Bearer${API_KEY}`}});
+      const response = await fetch(API_URL+'api/quote', {headers: {'Authorization': `Bearer ${API_KEY}`}});
       const data = await response.json();
       if (!response.ok) {
         throw new Error(data.message || "Error: Something went wrong!");
@@ -139,6 +149,7 @@ function App() {
     <div className="App">
       <div className="circle" style={leftCirclePosition}></div>
       <div className="circle" style={rightCirclePosition}></div>
+      <ErrorMessages messages={errorMessages} />
       <div className="Content">
         <h3>Quote Generator</h3>
         {!quote && <div>Click on the button to get a quote</div>}

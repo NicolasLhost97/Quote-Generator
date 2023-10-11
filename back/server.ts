@@ -9,7 +9,7 @@ const PORT = 3000;
 const QUOTE_API = 'https://api.quotable.io/quotes/random';
 const API_KEY = 'azerty123'
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
 
@@ -97,3 +97,6 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
     console.error('Unhandled error:', err);
     res.status(500).json({ success: false, error: 'An unexpected error occurred.' });
   });
+
+
+export default server;

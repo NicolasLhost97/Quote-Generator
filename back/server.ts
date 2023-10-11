@@ -1,4 +1,5 @@
 import express from 'express';
+import { Request, Response, NextFunction } from 'express';
 import axios from 'axios';
 import cors from 'cors';
 import morgan from 'morgan';
@@ -25,7 +26,7 @@ app.use(cors({
 
 //Checking API Token (Morgan)
 app.use(morgan('combined'));
-app.use((req, res, next) => {
+app.use((req: Request, res: Response, next: NextFunction) => {
     const apiToken = req.header('Authorization');
 
     // API Token checking
@@ -42,7 +43,7 @@ app.use((req, res, next) => {
 *** Routes ***
 **************/
 
-app.get('/api/quote', (req, res) => {
+app.get('/api/quote', (req: Request, res: Response) => {
     axios.get(QUOTE_API)
     .then(response => {
         if(response.data && response.data.length > 0) {
@@ -68,7 +69,26 @@ app.get('/api/quote', (req, res) => {
             res.status(504).json({ success: false, error: 'The server did not receive a response in time.' });
         } else {
             console.log('Error in query configuration : ', error.message);
-            res.status(500).json({ success: false, error: 'Erreur interne du serveur.' });
+            res.status(500).json({ success: false, error: 'Internal server error' });
         }
     })
 });
+
+
+
+/********************************
+*** Error Handling Middleware ***
+*********************************/
+
+// Catch-all handler for unknown routes
+app.use('*', (req: Request, res: Response) => {
+    console.log('ICI')
+    res.status(404).json({ success: false, error: 'Route not found.' });
+});
+
+// Global error handler
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+    console.log('Là')
+    console.error('Unhandled error:', err);
+    res.status(500).json({ success: false, error: 'An unexpected error occurred.' });
+  });

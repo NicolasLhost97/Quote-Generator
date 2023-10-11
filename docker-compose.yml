@@ -1,5 +1,4 @@
 version: '3.9'
-name: 'quote_generator'
 services:
   backend:
     build:
@@ -9,7 +8,7 @@ services:
       - "3000:3000"
     volumes:
       - ./back:/usr/src/app
-      - /usr/app/node_modules
+      - /usr/src/app/node_modules
 
   frontend:
     build:
@@ -19,4 +18,4 @@ services:
       - "8000:8000"
     volumes:
       - ./front:/usr/src/app
-      - /usr/app/node_modules
+      - /usr/src/app/node_modules

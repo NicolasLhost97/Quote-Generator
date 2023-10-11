@@ -14,6 +14,7 @@ This application retrieves a random quote for users.
   docker-compose build
   docker-compose up
   ```
+5. **Accessing the Application**: Once the application is up and running, you can access it by visiting: [http://localhost:8000/](http://localhost:8000/)
 
 ## Frontend Features
 
